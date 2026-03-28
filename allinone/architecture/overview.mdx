@@ -1,0 +1,61 @@
+---
+title: "架构概览"
+description: "allinone 的分层结构、请求生命周期与依赖注入方式。"
+icon: "sitemap"
+---
+
+## 设计理念
+
+allinone 基于 [anclax](https://github.com/cloudcarver/anclax) 框架，强制分层架构。业务逻辑与生成的脚手架严格分离，你只需要在少数几个目录中编写代码。
+
+## 目录结构
+
+| 目录 | 是否可编辑 | 用途 |
+|---|---|---|
+| `api/v1.yaml` | 是 | OpenAPI 3.0 规范——所有接口的唯一来源 |
+| `api/tasks.yaml` | 是 | 异步任务定义 |
+| `pkg/handler/` | 是 | HTTP 处理器（业务逻辑）|
+| `pkg/asynctask/` | 是 | 异步任务实现 |
+| `pkg/config/` | 是 | 应用配置结构体 |
+| `wire/wire.go` | 是 | 依赖注入声明 |
+| `sql/` | 是 | sqlc 原始 SQL 查询 |
+| `pkg/zcore/` | **否** | 框架核心，由 `anclax update` 更新 |
+| `pkg/zgen/` | **否** | 所有生成的代码，由 `make gen` 更新 |
+| `wire/wire_gen.go` | **否** | Wire 生成的依赖图 |
+
+<Warning>
+  不要手动编辑 `pkg/zcore/` 和 `pkg/zgen/` 中的文件，每次运行 `make gen` 都会覆盖它们。
+</Warning>
+
+## 请求生命周期
+
+<Steps>
+  <Step title="路由匹配">
+    Fiber 将请求匹配到由 `RegisterHandlers()` 注册的路由（生成自 `api/v1.yaml`）。
+  </Step>
+  <Step title="中间件链">
+    执行生成的中间件：JWT 签名验证、权限检查（如 `OperationPermit`）。
+  </Step>
+  <Step title="处理器调用">
+    调用 `pkg/handler/` 中对应的处理器方法。处理器负责解析请求、调用服务、序列化响应。
+  </Step>
+  <Step title="服务层">
+    服务层持有领域逻辑，调用 sqlc 生成的 Querier 读写数据库。
+  </Step>
+  <Step title="SQL 执行">
+    Querier 通过 pgx 驱动执行预编译的参数化 SQL 查询，无 ORM。
+  </Step>
+</Steps>
+
+## 依赖注入
+
+allinone 使用 [Google Wire](https://github.com/google/wire) 在编译期生成依赖图：
+
+- `wire/wire.go` — 声明 Provider 和注入器函数
+- `wire/wire_gen.go` — 生成结果（不可编辑）
+
+添加新服务时，在 `wire/wire.go` 中注册其构造函数，然后运行 `make gen` 重新生成。
+
+## 配置
+
+配置通过环境变量（`MYAPP_` 前缀）或配置文件传入。完整的配置项列表见[环境变量](/allinone/deployment/env)页面。

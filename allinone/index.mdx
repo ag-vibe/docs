@@ -1,0 +1,65 @@
+---
+title: "介绍"
+description: "allinone 是 ido 的 Go 后端，基于 anclax 框架，提供 REST API、JWT 认证、PostgreSQL 存储与后台任务调度。"
+icon: "server"
+---
+
+## allinone 是什么？
+
+**allinone** 是 ido 应用的后端服务，使用 Go 语言编写，基于 [anclax](https://github.com/cloudcarver/anclax) 框架构建。它提供：
+
+- 完整的 REST API（待办事项的增删改查、用户认证）
+- JWT 认证与 Token 刷新
+- PostgreSQL 数据持久化
+- 后台定时任务（如自动计数器）
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="play" href="/allinone/quickstart">
+    用 Docker Compose 在本地运行后端。
+  </Card>
+  <Card title="架构说明" icon="sitemap" href="/allinone/architecture/overview">
+    了解分层结构与代码生成流程。
+  </Card>
+  <Card title="API 参考" icon="terminal" href="/allinone/api/todos">
+    查看所有 REST 接口的请求与响应格式。
+  </Card>
+  <Card title="部署" icon="cloud" href="/allinone/deployment/docker">
+    使用 Docker Compose 或生产镜像部署。
+  </Card>
+</CardGroup>
+
+## 主要特性
+
+<AccordionGroup>
+  <Accordion title="OpenAPI 优先" icon="file-code">
+    所有接口定义在 `api/v1.yaml` 中。服务端代码、路由、中间件均由 `oapi-codegen` 从规范自动生成，你只需编写业务逻辑。
+  </Accordion>
+
+  <Accordion title="类型安全的 SQL（sqlc）" icon="database">
+    SQL 查询写在 `sql/` 目录中，由 sqlc 编译为完全类型安全的 Go 函数。没有 ORM，没有运行时反射。
+  </Accordion>
+
+  <Accordion title="编译期依赖注入（Wire）" icon="plug">
+    使用 Google Wire 在编译期生成依赖注入代码，避免运行时错误。
+  </Accordion>
+
+  <Accordion title="后台任务与定时任务" icon="clock">
+    任务定义在 `api/tasks.yaml` 中，支持 cron 表达式和重试策略。`AutoIncrementCounter` 任务每 5 秒自动执行一次。
+  </Accordion>
+
+  <Accordion title="JWT 认证与权限控制" icon="key">
+    Bearer Token 认证在 OpenAPI 规范层面强制执行。通过 `x-check-rules` 扩展可以为每个接口单独配置权限检查中间件。
+  </Accordion>
+</AccordionGroup>
+
+## allinone 与 ido 的关系
+
+allinone 在 `/api/v1` 提供 REST API，ido 前端使用 `@hey-api/openapi-ts` 从 `api/todo.gen.yaml`（完整规范的子集）生成类型化客户端。
+
+```text
+api/v1.yaml  ──子集提取──▶  api/todo.gen.yaml
+                                   │
+                        @hey-api/openapi-ts（在 todo/ 中运行）
+                                   │
+                           src/api-gen/（类型化客户端）
+```

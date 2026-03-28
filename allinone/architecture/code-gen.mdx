@@ -1,0 +1,75 @@
+---
+title: "代码生成"
+description: "allinone 如何使用 oapi-codegen、sqlc、Wire 和 mockgen 消除样板代码，保持全栈类型安全。"
+icon: "wand-sparkles"
+---
+
+## 概览
+
+allinone 依赖四个代码生成器，覆盖完整技术栈——HTTP 层、SQL 层、依赖图和测试 Mock。所有生成器通过一条命令统一执行：
+
+```bash
+make gen
+```
+
+## 工具一览
+
+| 工具 | 配置文件 | 输出目录 | 生成内容 |
+|---|---|---|---|
+| `oapi-codegen` | `api/v1.yaml` | `pkg/zgen/apigen/spec_gen.go` | Fiber 路由桩、请求/响应类型、中间件 |
+| `xware` | `api/v1.yaml` | `pkg/zgen/apigen/scopes_extend_gen.go` | `x-check-rules` 权限守卫 |
+| `sqlc` | `sql/sqlc.yaml` | `pkg/zgen/querier/` | 每条 SQL 查询对应的类型化 Go 函数 |
+| `Wire` | `wire/wire.go` | `wire/wire_gen.go` | 编译期依赖注入图 |
+| `mockgen` | `anchor.yaml` | `pkg/zcore/model/mock_gen.go` 等 | 单元测试用 Mock 实现 |
+| `task-handler` | `api/tasks.yaml` | `pkg/zgen/taskgen/taskgen_gen.go` | 异步任务处理器桩 |
+| `openapi-subset` | `api/v1.yaml` | `api/todo.gen.yaml` | 前端客户端用的 API 子集规范 |
+
+## oapi-codegen — HTTP 层
+
+`oapi-codegen` 读取 `api/v1.yaml`，生成：
+
+- 所有请求/响应 Schema 对应的 Go 结构体
+- 处理器必须实现的 `ServerInterface` 接口
+- 将所有路由挂载到 Fiber 应用的 `RegisterHandlers()` 函数
+- `BearerAuth` 安全约束对应的 JWT 中间件
+
+你只需在 `pkg/handler/` 中实现 `ServerInterface`，生成代码不需要触碰。
+
+## xware — 权限守卫
+
+`api/v1.yaml` 中的 `x-check-rules` 扩展定义自定义权限检查：
+
+```yaml
+x-check-rules:
+  OperationPermit:
+    description: 检查用户是否有权限执行该操作
+    useContext: true
+    parameters:
+      - name: operationID
+        schema:
+          type: string
+```
+
+当接口使用 `x.OperationPermit(c, operationID)` 时，xware 会生成对应的中间件，在处理器执行前自动调用你的 `OperationPermit` 实现。
+
+## sqlc — SQL 层
+
+SQL 查询写在 `sql/` 目录，sqlc 将其编译为类型安全的 Go 函数：
+
+```sql
+-- name: ListTodos :many
+SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at DESC;
+```
+
+生成后变为：
+
+```go
+// pkg/zgen/querier/ （自动生成）
+func (q *Queries) ListTodos(ctx context.Context, userID uuid.UUID) ([]Todo, error)
+```
+
+没有 ORM，SQL 是数据访问的唯一来源。
+
+## 前端规范子集
+
+完整的 `api/v1.yaml` 包含前端不需要的内部接口（计数器、认证内部实现等）。`cmd/openapi-subset/` 工具从中提取 `/todos` 路径，生成 `api/todo.gen.yaml`，供 ido 前端用 `pnpm gen` 生成客户端代码。

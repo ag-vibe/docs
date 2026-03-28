@@ -1,0 +1,58 @@
+---
+title: "更新日志"
+description: "ag-vibe 各项目的版本更新记录。"
+icon: "clock-rotate-left"
+rss: true
+---
+
+<Update label="2026-03-28" description="编辑体验与 API 规范稳定性更新" tags={["ido", "AllinOne"]}>
+
+## ido
+
+- 任务编辑体验升级：标题编辑后支持 `Tab` 直接进入描述编辑
+- 任务卡支持展示描述，空描述不再显示占位内容
+- 描述增加本地持久化兜底，弱网下更不容易丢失
+- 仅在生产环境展示 SW 更新提示，开发环境自动清理 SW 与缓存
+
+## AllinOne
+
+- 修复 OpenAPI 版本字段格式，`openapi` 明确为字符串 `"3.0.0"`
+- 提升 OpenAPI 文档导入、校验与 SDK 生成链路兼容性
+
+</Update>
+
+<Update label="2026-03-24" description="部署链路增强与发布兼容性改进" tags={["ido", "AllinOne"]}>
+
+## ido
+
+- 部署流程切换并对齐 Cloudflare Pages 发布链路
+- 修复 wrangler 版本与参数兼容问题，提升构建稳定性
+- 清理多余部署步骤，降低 CI 发布失败率
+
+## AllinOne
+
+- 增加生产 `Dockerfile` 与 `docker-compose.prod.yaml`
+- 新增 GitHub Actions 部署流程，支持构建并推送 GHCR 镜像
+- 增加远程服务器自动拉取并重启服务的发布步骤
+
+</Update>
+
+<Update label="2026-03-22" description="ido 与 AllinOne 核心能力首发" tags={["ido", "AllinOne"]}>
+
+## ido
+
+- 看板核心能力上线：`Later / This Week / Today / Done` 四栏与拖拽整理
+- 支持任务新增、重命名、删除、完成标记等完整 CRUD 交互
+- 认证流程上线：登录/注册、Token 存储、自动续期与失效回收
+- 离线同步闭环上线：离线操作入队，恢复网络后自动回放
+- 首版 PWA 与深色模式落地，支持安装与更新提示
+
+## AllinOne
+
+- 后端项目初始化完成，提供可运行的开发环境与基础 API
+- TODO API 首发：`/todos` 列表/创建与 `/todos/{id}` 更新/删除
+- 数据模型与迁移上线，支持用户与任务数据持久化
+- 引入任务分桶能力（`later/week/today`）及归一化处理
+- 新增 TODO 子集 OpenAPI 生成能力与 BearerAuth 鉴权声明
+
+</Update>

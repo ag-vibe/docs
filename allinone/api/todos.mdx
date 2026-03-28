@@ -1,0 +1,164 @@
+---
+title: "待办事项 API"
+description: "创建、查询、更新和删除待办事项的 REST 接口。"
+icon: "list-check"
+---
+
+所有待办事项接口都需要有效的 JWT Bearer Token，在请求头中传入：
+
+```
+Authorization: Bearer <accessToken>
+```
+
+## 数据模型
+
+### TodoItem
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `string (uuid)` | 唯一标识符，由服务器分配 |
+| `title` | `string` | 任务标题 |
+| `done` | `boolean` | 是否已完成 |
+| `bucket` | `later \| week \| today` | 所属时间桶 |
+| `createdAt` | `string (date-time)` | 创建时间（ISO 8601）|
+
+---
+
+## 查询待办列表
+
+```http
+GET /api/v1/todos
+```
+
+返回当前用户的所有待办事项，按创建时间倒序排列。返回前后端会自动执行时间降级：将过期的"今日"任务退回"本周"，将过期的"本周"任务退回"稍后"。
+
+**响应 `200`**
+
+```json
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "写文档",
+    "done": false,
+    "bucket": "today",
+    "createdAt": "2025-01-15T09:00:00Z"
+  }
+]
+```
+
+**示例**
+
+```bash
+curl http://localhost:2910/api/v1/todos \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+---
+
+## 创建待办事项
+
+```http
+POST /api/v1/todos
+```
+
+新建一个待办事项，默认落入 `later`（稍后）桶。
+
+**请求体**
+
+```json
+{ "title": "我的新任务" }
+```
+
+**响应 `201`**
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "title": "我的新任务",
+  "done": false,
+  "bucket": "later",
+  "createdAt": "2025-01-15T10:30:00Z"
+}
+```
+
+**示例**
+
+```bash
+curl -X POST http://localhost:2910/api/v1/todos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <accessToken>" \
+  -d '{"title": "我的新任务"}'
+```
+
+---
+
+## 更新待办事项
+
+```http
+PATCH /api/v1/todos/{id}
+```
+
+局部更新，只需传入要修改的字段。
+
+**路径参数**
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | `string (uuid)` | 待办事项 ID |
+
+**请求体**（所有字段均可选）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `title` | `string` | 新标题 |
+| `done` | `boolean` | 完成状态 |
+| `bucket` | `later \| week \| today` | 目标时间桶 |
+
+**响应 `200`** — 返回更新后的待办事项
+
+**响应 `404`** — 未找到或不属于当前用户
+
+**示例 — 移动到今日**
+
+```bash
+curl -X PATCH http://localhost:2910/api/v1/todos/<id> \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <accessToken>" \
+  -d '{"bucket": "today"}'
+```
+
+**示例 — 标记完成**
+
+```bash
+curl -X PATCH http://localhost:2910/api/v1/todos/<id> \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <accessToken>" \
+  -d '{"done": true}'
+```
+
+---
+
+## 删除待办事项
+
+```http
+DELETE /api/v1/todos/{id}
+```
+
+永久删除一个待办事项。
+
+**路径参数**
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | `string (uuid)` | 待办事项 ID |
+
+**响应 `204`** — 删除成功，无响应体
+
+**响应 `404`** — 未找到或不属于当前用户
+
+**示例**
+
+```bash
+curl -X DELETE http://localhost:2910/api/v1/todos/<id> \
+  -H "Authorization: Bearer <accessToken>"
+```

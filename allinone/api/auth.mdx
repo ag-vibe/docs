@@ -1,0 +1,93 @@
+---
+title: "认证 API"
+description: "登录和 Token 刷新接口。"
+icon: "key"
+---
+
+## 登录
+
+```http
+POST /api/v1/auth/sign-in
+```
+
+验证用户名和密码，返回访问令牌（Access Token）和刷新令牌（Refresh Token）。
+
+**请求体**
+
+```json
+{
+  "name": "alice",
+  "password": "your-password"
+}
+```
+
+**响应 `200`**
+
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer"
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `accessToken` | 短期有效的 JWT，用于调用需要认证的接口 |
+| `refreshToken` | 长期有效的令牌，用于在 Access Token 到期前换取新令牌 |
+| `tokenType` | 固定为 `Bearer` |
+
+**示例**
+
+```bash
+curl -X POST http://localhost:2910/api/v1/auth/sign-in \
+  -H "Content-Type: application/json" \
+  -d '{"name": "test", "password": "test"}'
+```
+
+---
+
+## 刷新 Token
+
+```http
+POST /api/v1/auth/refresh
+```
+
+使用有效的刷新令牌换取新的访问令牌和刷新令牌。
+
+ido 前端会在访问令牌到期前 60 秒自动调用此接口，整个过程对用户透明。
+
+**请求体**
+
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**响应 `200`** — 返回新的令牌对，格式同登录接口
+
+**响应 `401`** — 刷新令牌无效或已过期，需要重新登录
+
+**示例**
+
+```bash
+curl -X POST http://localhost:2910/api/v1/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{"refreshToken": "<refreshToken>"}'
+```
+
+---
+
+## 使用 Access Token
+
+在需要认证的接口请求头中携带：
+
+```bash
+curl http://localhost:2910/api/v1/todos \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+<Warning>
+  如果刷新令牌被服务器以 4xx 错误拒绝，前端会立即清除本地会话，用户需要重新登录。网络错误和 5xx 错误不会触发退出，避免因临时故障意外断开登录状态。
+</Warning>
