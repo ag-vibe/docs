@@ -1,0 +1,50 @@
+---
+title: "技术栈"
+description: "ido 前端使用的框架、工具链与主要依赖库。"
+icon: "layer-group"
+---
+
+## 前端框架
+
+| 技术 | 用途 |
+|---|---|
+| [React 19](https://react.dev) | UI 框架 |
+| [TanStack Router](https://tanstack.com/router) | 客户端路由，基于文件系统，完全类型安全 |
+| [TanStack Query](https://tanstack.com/query) | 服务端状态管理，支持乐观更新与缓存失效 |
+| [Tailwind CSS v4](https://tailwindcss.com) | 原子化 CSS，通过 CSS 变量实现深色/浅色主题 |
+
+## 构建工具链
+
+ido 使用 [Vite+](https://voidzero.dev)（命令行工具 `vp`）作为统一工具链，内部集成了 Vite、Rolldown、Vitest、Oxlint 和 Oxfmt。
+
+| 命令 | 作用 |
+|---|---|
+| `vp dev` | 启动开发服务器（端口 3000）|
+| `vp build` | 生产构建 |
+| `vp test` | 运行单元测试 |
+| `vp check` | 格式检查、Lint 和 TypeScript 类型检查 |
+| `vp install` | 安装依赖（代替 `pnpm install`）|
+
+## API 客户端生成
+
+ido 的 API 客户端由 [`@hey-api/openapi-ts`](https://heyapi.dev) 从 allinone 的 OpenAPI 规范自动生成，包含完整的 TypeScript 类型和 TanStack Query 集成。
+
+运行 `pnpm gen` 可重新生成客户端代码（位于 `src/api-gen/`）。
+
+## PWA 支持
+
+通过 `vite-plugin-pwa` 和 Workbox 实现：
+
+- 自动生成 Service Worker 和 Web 应用清单
+- 支持离线访问（缓存静态资源）
+- 支持安装到桌面/手机主屏幕
+- 新版本发布时显示更新提示（`UpdatePrompt` 组件）
+
+## 测试
+
+| 工具 | 用途 |
+|---|---|
+| Vitest | 单元测试（集成在 Vite+ 中，`vp test`）|
+| Playwright | 浏览器端到端测试 |
+| Cucumber | BDD 测试框架，场景以 Gherkin 格式编写（`e2e/` 目录）|
+| @testing-library/react | 组件测试工具 |

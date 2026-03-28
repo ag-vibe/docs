@@ -1,0 +1,68 @@
+---
+title: "计数器 API"
+description: "演示用计数器接口，展示权限守卫与定时任务的工作方式。"
+icon: "hash"
+---
+
+## 概览
+
+计数器是 allinone 内置的演示功能，展示两个核心模式：
+
+- `GET /counter` — 无需认证的公开接口
+- `POST /counter` — 需要 JWT 认证且带有 `OperationPermit` 权限守卫的接口
+
+计数器的值还会由后台定时任务每 5 秒自动递增一次，可用于验证服务是否正常运行。
+
+---
+
+## 查询计数器
+
+```http
+GET /api/v1/counter
+```
+
+返回当前计数器的值，无需认证。
+
+**响应 `200`**
+
+```json
+[{"count": 42}]
+```
+
+**示例**
+
+```bash
+curl http://localhost:2910/api/v1/counter
+```
+
+---
+
+## 手动递增
+
+```http
+POST /api/v1/counter
+```
+
+手动触发计数器递增。需要有效的 JWT Bearer Token 以及 `OperationPermit` 权限。
+
+**响应 `202`** — 已接受，无响应体
+
+**示例**
+
+```bash
+curl -X POST http://localhost:2910/api/v1/counter \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+---
+
+## 自动递增（定时任务）
+
+`AutoIncrementCounter` 后台任务每 5 秒自动运行一次，无需任何请求触发。启动服务后，你可以持续调用 `GET /counter` 观察数值变化，确认后台任务 Worker 正常工作。
+
+```bash
+# 每 2 秒查询一次，观察自动递增
+watch -n 2 'curl -s http://localhost:2910/api/v1/counter'
+```
+
+详见[异步任务](/allinone/architecture/async-tasks)页面了解定时任务的定义方式。

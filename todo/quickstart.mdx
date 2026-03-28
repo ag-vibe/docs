@@ -1,0 +1,84 @@
+---
+title: "快速开始"
+description: "在本地运行 ido，连接 allinone 后端，开始管理你的任务。"
+icon: "play"
+---
+
+## 前置条件
+
+- 已启动 [allinone 后端](/allinone/quickstart)（运行在 `http://localhost:2910`）
+- [Node.js](https://nodejs.org) 20 或更高版本
+- [pnpm](https://pnpm.io) 10 或更高版本
+
+<Tip>
+  先用一条命令启动后端：在 `allinone/` 目录下运行 `docker compose up`，然后再回来启动前端。
+</Tip>
+
+## 安装与启动
+
+<Steps>
+  <Step title="克隆仓库">
+    ```bash
+    git clone https://github.com/wibus-wee/ag-vibe.git
+    cd ag-vibe/todo
+    ```
+  </Step>
+
+  <Step title="安装依赖">
+    ```bash
+    pnpm install
+    ```
+  </Step>
+
+  <Step title="配置后端地址">
+    复制示例配置文件：
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    默认已指向本地后端，无需修改：
+
+    ```bash
+    VITE_API_BASE_URL=http://localhost:2910/api/v1
+    ```
+  </Step>
+
+  <Step title="启动开发服务器">
+    ```bash
+    pnpm dev
+    ```
+
+    打开浏览器访问 [http://localhost:3000](http://localhost:3000)。
+  </Step>
+</Steps>
+
+## 登录
+
+首次访问会跳转到登录页。使用后端初始化时创建的测试账号：
+
+```
+用户名：test
+密码：test
+```
+
+登录后即可进入看板页面，开始添加和管理任务。
+
+## 常用操作
+
+| 操作 | 方法 |
+|---|---|
+| 新建任务 | 在「稍后」列顶部的输入框输入标题，按 **Enter** |
+| 移动任务 | 拖拽卡片到目标列 |
+| 标记完成 | 点击卡片左侧的复选框，或拖到「已完成」列 |
+| 重命名 | 双击卡片标题，编辑后按 **Enter** 或点击其他区域 |
+| 删除 | 悬停卡片，点击右侧的 **×** 按钮 |
+
+## 安装为桌面 / 手机应用
+
+ido 是一个 PWA（渐进式 Web 应用），可以安装到设备主屏幕：
+
+- **Chrome / Edge**：地址栏右侧点击「安装」图标
+- **Safari（iOS）**：点击分享按钮 → 「添加到主屏幕」
+
+安装后即使离线也可以打开应用，操作会在恢复网络时自动同步。

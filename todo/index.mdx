@@ -1,0 +1,54 @@
+---
+title: "介绍"
+description: "ido（idea + todo）是一个简洁的个人任务管理应用，支持离线使用，用看板的方式帮你整理想法和待办事项。"
+icon: "list-check"
+---
+
+## ido 是什么？
+
+**ido**（idea + todo）是一个轻量级的个人任务管理工具，灵感来自 [flodo.today](https://flodo.today)。它提供四列看板——**稍后**、**本周**、**今日**、**已完成**——让你随时整理脑海中的想法和待办事项。
+
+即使在没有网络的情况下，ido 也能正常工作。所有操作会在本地排队，联网后自动同步到服务器。
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="rocket" href="/todo/quickstart">
+    几分钟内在本地运行 ido。
+  </Card>
+  <Card title="看板功能" icon="columns-3" href="/todo/features/board">
+    了解四列看板的使用方式。
+  </Card>
+  <Card title="离线同步" icon="wifi-slash" href="/todo/features/offline-sync">
+    断网时如何保存操作并在恢复连接后自动同步。
+  </Card>
+  <Card title="账号与登录" icon="lock" href="/todo/features/auth">
+    登录、退出与 Token 自动刷新机制。
+  </Card>
+</CardGroup>
+
+## 主要功能
+
+<AccordionGroup>
+  <Accordion title="四列看板" icon="columns-3">
+    每个任务属于四个时间桶之一：**稍后（Later）**、**本周（This Week）**、**今日（Today）** 或 **已完成（Done）**。拖拽卡片即可移动任务。
+
+    后端会自动降级过期任务：昨天没完成的"今日"任务会退回到"本周"，上周没完成的"本周"任务会退回到"稍后"，让你的看板始终反映真实状态。
+  </Accordion>
+
+  <Accordion title="离线优先" icon="wifi-slash">
+    断网时，所有的新建、修改、删除操作仍然可以正常进行。操作会保存在本地队列中，恢复网络后按顺序自动同步到服务器，不会丢失任何数据。
+  </Accordion>
+
+  <Accordion title="即时响应" icon="bolt">
+    所有操作（创建、移动、删除）会立即反映在界面上，无需等待服务器响应。如果请求失败，界面会自动回滚到操作前的状态。
+  </Accordion>
+
+  <Accordion title="可安装为应用（PWA）" icon="smartphone">
+    ido 支持作为渐进式 Web 应用安装到桌面或手机主屏幕，提供接近原生应用的体验，并支持离线访问。
+  </Accordion>
+
+  <Accordion title="深色 / 浅色模式" icon="moon">
+    支持系统跟随的深色和浅色主题切换。
+  </Accordion>
+</AccordionGroup>
+MDXEOF",
+  "description": "Rewrite todo index in Chinese

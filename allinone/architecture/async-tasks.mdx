@@ -1,0 +1,93 @@
+---
+title: "异步任务"
+description: "allinone 如何定义、生成和实现后台任务，包括定时任务和重试策略。"
+icon: "clock"
+---
+
+## 什么是异步任务？
+
+allinone 内置后台任务 Worker，用于处理不适合在 HTTP 请求周期内完成的工作。任务定义在 `api/tasks.yaml` 中，由 `task-handler` 生成器编译为类型化的 Go 接口桩。
+
+## 任务定义（tasks.yaml）
+
+```yaml
+tasks:
+  - name: AutoIncrementCounter
+    description: 定时自动递增计数器
+    cronjob:
+      cronExpression: "*/5 * * * * *"   # 每 5 秒执行一次
+    retryPolicy:
+      interval: 30m
+      maxAttempts: -1                    # 无限重试
+    parameters:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: integer
+
+  - name: IncrementCounter
+    description: 手动递增计数器
+    retryPolicy:
+      interval: 30m
+      maxAttempts: -1
+    parameters:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: integer
+```
+
+## 任务类型
+
+### 定时任务（Cron）
+
+带有 `cronjob.cronExpression` 的任务由 Worker 自动调度，使用 6 位 cron 表达式（含秒）：
+
+```yaml
+cronjob:
+  cronExpression: "*/5 * * * * *"  # 每 5 秒
+```
+
+`AutoIncrementCounter` 就是一个定时任务，每 5 秒自动递增计数器，可用于验证 Worker 是否正常运行。
+
+### 按需任务
+
+不带 `cronjob` 的任务由代码手动触发：
+
+```go
+err := taskClient.Enqueue(ctx, taskgen.IncrementCounterParams{
+    Amount: 1,
+})
+```
+
+## 重试策略
+
+| 字段 | 说明 |
+|---|---|
+| `interval` | 失败后等待多久再重试（如 `30m`、`1h`）|
+| `maxAttempts` | 最大重试次数，`-1` 表示无限重试 |
+
+<Note>
+  设置 `maxAttempts: -1` 时，任务会无限重试。请确保你的任务实现是幂等的，即多次执行结果相同。
+</Note>
+
+## 实现任务
+
+运行 `make gen` 后，在 `pkg/asynctask/` 中实现生成的 `TaskHandler` 接口：
+
+```go
+type CounterTaskHandler struct {
+    counterService *handler.CounterService
+}
+
+func (h *CounterTaskHandler) AutoIncrementCounter(
+    ctx context.Context,
+    params taskgen.AutoIncrementCounterParams,
+) error {
+    return h.counterService.Increment(ctx, params.Amount)
+}
+```
+
+编译器会强制要求实现 `tasks.yaml` 中定义的所有任务。添加新任务后不实现会导致编译失败。

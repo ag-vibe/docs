@@ -1,0 +1,88 @@
+---
+title: "快速开始"
+description: "用 Docker Compose 在本地运行 allinone，并发出第一个 API 请求。"
+icon: "play"
+---
+
+## 前置条件
+
+- [Docker](https://www.docker.com) 与 Docker Compose
+
+## 启动
+
+<Steps>
+  <Step title="克隆仓库">
+    ```bash
+    git clone https://github.com/wibus-wee/ag-vibe.git
+    cd ag-vibe/allinone
+    ```
+  </Step>
+
+  <Step title="启动服务">
+    ```bash
+    docker compose up
+    ```
+
+    这会同时启动 Go 应用和 PostgreSQL 16 数据库。API 地址为 `http://localhost:2910`。
+  </Step>
+
+  <Step title="验证服务正常运行">
+    ```bash
+    curl http://localhost:2910/api/v1/counter
+    ```
+
+    预期返回：
+
+    ```json
+    [{"count": 0}]
+    ```
+  </Step>
+</Steps>
+
+## 基本 API 请求
+
+### 注册 / 登录
+
+```bash
+curl -X POST http://localhost:2910/api/v1/auth/sign-in \
+  -H "Content-Type: application/json" \
+  -d '{"name": "test", "password": "test"}'
+```
+
+返回的 `accessToken` 用于后续需要认证的请求。
+
+### 查看待办列表
+
+```bash
+curl http://localhost:2910/api/v1/todos \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+### 创建待办事项
+
+```bash
+curl -X POST http://localhost:2910/api/v1/todos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <accessToken>" \
+  -d '{"title": "我的第一个任务"}'
+```
+
+### 查看计数器
+
+```bash
+curl http://localhost:2910/api/v1/counter
+```
+
+计数器每 5 秒由后台任务自动递增，可以用来确认服务运行正常。
+
+## 停止服务
+
+```bash
+docker compose down
+```
+
+加上 `-v` 参数会同时删除数据库数据：
+
+```bash
+docker compose down -v
+```

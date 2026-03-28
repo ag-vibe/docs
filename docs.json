@@ -1,68 +1,84 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "ag-vibe",
   "colors": {
     "primary": "#16A34A",
-    "light": "#07C983",
+    "light": "#22C55E",
     "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "ido",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "todo/index",
+              "todo/quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Features",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "todo/features/board",
+              "todo/features/offline-sync",
+              "todo/features/auth"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Tech stack",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "todo/tech/stack"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "AllinOne",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
-              "api-reference/introduction"
+              "allinone/index",
+              "allinone/quickstart"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Architecture",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "allinone/architecture/overview",
+              "allinone/architecture/code-gen",
+              "allinone/architecture/async-tasks"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": [
+              "allinone/deployment/docker",
+              "allinone/deployment/env"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Reference",
+            "openapi": "https://github.com/ag-vibe/allinone/raw/refs/heads/main/api/v1.yaml"
+          }
+        ]
+      },
+      {
+        "tab": "Updates",
+        "groups": [
+          {
+            "group": "更新日志",
+            "pages": [
+              "updates/index"
             ]
           }
         ]
@@ -71,14 +87,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/ag-vibe",
+          "icon": "github"
         }
       ]
     }
@@ -88,35 +99,35 @@
     "dark": "/logo/dark.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "GitHub",
+      "href": "https://github.com/ag-vibe"
+    }
+  },
+  "openapi": ["https://github.com/ag-vibe/allinone/raw/refs/heads/main/api/v1.yaml"],
+  "api": {
+    "mdx": {
+      "server": "http://localhost:2910/api/v1"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/ag-vibe",
+      "x": "https://x.com/wibus_wee"
     }
   }
 }

@@ -1,0 +1,85 @@
+---
+title: "Docker 部署"
+description: "使用 Docker Compose 在本地开发或生产环境中运行 allinone。"
+icon: "docker"
+---
+
+## Compose 文件说明
+
+| 文件 | 用途 |
+|---|---|
+| `docker-compose.yaml` | 本地开发，含热重载 |
+| `docker-compose.prod.yaml` | 生产环境，使用编译后的二进制镜像 |
+
+## 本地开发
+
+```bash
+cd allinone
+docker compose up
+```
+
+启动内容：
+- **`dev`** — Go 应用开发容器（热重载）
+- **`db`** — PostgreSQL 16 数据库
+
+API 地址：`http://localhost:2910`
+
+### 重启应用（代码变更后）
+
+```bash
+docker compose restart dev
+# 或
+make reload
+```
+
+### 连接数据库
+
+```bash
+make db
+```
+
+---
+
+## 生产部署
+
+### 构建镜像
+
+```bash
+docker build -t allinone:latest .
+```
+
+### 启动生产环境
+
+```bash
+docker compose -f docker-compose.prod.yaml up -d
+```
+
+启动前确保已设置所有必要的环境变量，详见[环境变量](/allinone/deployment/env)。
+
+### CI/CD
+
+仓库内置 GitHub Actions 工作流（`.github/workflows/deploy.yml`），每次推送到主分支时自动构建并推送 Docker 镜像。
+
+<Tip>
+  通过 Docker Compose 的 `environment` 块或同目录的 `.env` 文件传入环境变量。不要将密钥写入镜像。
+</Tip>
+
+---
+
+## 数据库迁移
+
+allinone 使用 `golang-migrate` 管理数据库 Schema。迁移在服务启动时自动执行，无需手动操作。
+
+<Warning>
+  部署包含破坏性迁移（如删除列或表）的版本前，务必先备份数据库。`golang-migrate` 不会在生产环境中自动回滚失败的迁移。
+</Warning>
+
+## 停止服务
+
+```bash
+# 停止服务，保留数据
+docker compose down
+
+# 停止服务并删除数据库数据
+docker compose down -v
+```
