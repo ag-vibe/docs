@@ -1,0 +1,64 @@
+---
+title: "快速开始"
+description: "在本地运行 in-memo，连接 allinone 后端，开始记录。"
+icon: "play"
+---
+
+## 前置条件
+
+- 已启动 [allinone 后端](/allinone/quickstart)（运行在 `http://localhost:2910`）
+- [Node.js](https://nodejs.org) 20 或更高版本
+- [pnpm](https://pnpm.io) 10 或更高版本
+
+<Tip>
+  先用一条命令启动后端：在 `allinone/` 目录下运行 `docker compose up`，然后再回来启动前端。
+</Tip>
+
+## 安装与启动
+
+<Steps>
+  <Step title="克隆仓库">
+    ```bash
+    git clone https://github.com/wibus-wee/ag-vibe.git
+    cd ag-vibe/memos
+    ```
+  </Step>
+
+  <Step title="安装依赖">
+    ```bash
+    pnpm install
+    ```
+  </Step>
+
+  <Step title="启动开发服务器">
+    ```bash
+    pnpm dev
+    ```
+
+    打开浏览器访问 [http://localhost:3000](http://localhost:3000)。
+  </Step>
+</Steps>
+
+## 登录
+
+首次访问会跳转到登录页。使用后端初始化时创建的测试账号：
+
+```
+用户名：test
+密码：test
+```
+
+登录后即可进入主页，开始写第一条 memo。
+
+## 常用操作
+
+| 操作 | 方法 |
+|---|---|
+| 新建 memo | 在顶部输入框输入内容，按 **⌘ Enter** 或点击 **Send** |
+| 编辑 memo | 悬停卡片，点击右侧铅笔图标 |
+| 归档 memo | 悬停卡片 → 点击 **···** → **Archive** |
+| 还原归档 | 切换到 Archived 视图 → **···** → **Restore** |
+| 删除 memo | 悬停卡片 → **···** → **Delete**（不可撤销） |
+| 按标签过滤 | 点击侧边栏中的标签，或点击 memo 卡片上的标签 |
+| 搜索 | 在搜索框输入关键词 |
+| 清除过滤 | 点击当前激活的标签旁的 **×**，或点击侧边栏「All」 |

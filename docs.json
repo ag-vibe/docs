@@ -11,6 +11,26 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "in-memo (#Piece)",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "memos/index",
+              "memos/quickstart"
+            ]
+          },
+          {
+            "group": "功能",
+            "pages": [
+              "memos/features/writing",
+              "memos/features/tags",
+              "memos/features/archive"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "ido (#Piece)",
         "groups": [
           {

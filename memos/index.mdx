@@ -1,0 +1,58 @@
+---
+title: "介绍"
+description: "in-memo 是一个简洁的个人备忘录应用，用 #标签 组织想法，支持 Markdown 格式。"
+icon: "note-sticky"
+---
+
+## in-memo 是什么？
+
+**in-memo** 是 ag-vibe 的备忘录 Piece。它的核心理念很简单：随手记下来，用 `#标签` 归类，不需要文件夹、不需要层级结构。
+
+打开就能写，写完自动保存，侧边栏的活跃图让你看到自己过去 12 周的记录密度。
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="rocket" href="/memos/quickstart">
+    几分钟内在本地运行 in-memo。
+  </Card>
+  <Card title="写 Memo" icon="pen-to-square" href="/memos/features/writing">
+    编辑器的使用方式与 Markdown 支持。
+  </Card>
+  <Card title="标签" icon="hashtag" href="/memos/features/tags">
+    用 #标签 组织和过滤你的 memo。
+  </Card>
+  <Card title="归档" icon="box-archive" href="/memos/features/archive">
+    归档不再需要的 memo，随时还原。
+  </Card>
+</CardGroup>
+
+## 主要功能
+
+<AccordionGroup>
+  <Accordion title="随手记录" icon="pen-to-square">
+    主页顶部始终有一个输入框，点击即可开始输入。写完按 **⌘ Enter**（或 **Ctrl Enter**）发送，内容立即出现在列表里。
+  </Accordion>
+
+  <Accordion title="#标签 组织" icon="hashtag">
+    在内容里任意位置输入 `#标签名` 即可打标签。标签自动出现在侧边栏，点击即可过滤。一条 memo 可以有任意数量的标签。
+  </Accordion>
+
+  <Accordion title="Markdown 支持" icon="markdown">
+    memo 内容支持 Markdown 渲染：**粗体**、_斜体_、`行内代码`，编辑器工具栏提供快捷按钮。
+  </Accordion>
+
+  <Accordion title="活跃图" icon="chart-simple">
+    侧边栏展示过去 12 周每天的记录数量，颜色深浅代表当天的活跃程度，帮助你养成每日记录的习惯。
+  </Accordion>
+
+  <Accordion title="归档" icon="box-archive">
+    不想删除但暂时不需要看到的 memo 可以归档。归档后从主列表隐藏，在「Archived」视图中仍可访问和还原。
+  </Accordion>
+
+  <Accordion title="全文搜索" icon="magnifying-glass">
+    页面顶部的搜索框支持按内容关键词过滤，与标签过滤可以同时使用。
+  </Accordion>
+
+  <Accordion title="深色 / 浅色模式" icon="moon">
+    右下角可切换深色和浅色主题，设置保存在本地，刷新后不丢失。
+  </Accordion>
+</AccordionGroup>
