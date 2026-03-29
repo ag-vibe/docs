@@ -28,7 +28,7 @@ isTokenExpiringSoon(accessToken, 5 * 60 * 1000)
 2. 刷新成功后，用新的 `Authorization` 头重试原始请求一次。
 3. 刷新失败时，将原始 401 响应返回给调用方，不做额外处理。
 
-认证端点（`/auth/sign-in`、`/auth/sign-up`、`/auth/sign-out`、`/auth/refresh`）被排除在重试逻辑之外，以防止无限循环。
+认证端点（默认：`/auth/sign-in`、`/auth/sign-up`、`/auth/sign-out`、`/auth/refresh`）被排除在重试逻辑之外，以防止无限循环。需要自定义时可在 `createAuthClient` 里传 `authEndpointPaths`。
 
 已重试过的请求会带有内部标记头 `x-ag-vibe-auth-retried`，第二次收到 401 时直接透传。
 

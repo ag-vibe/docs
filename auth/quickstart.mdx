@@ -39,6 +39,16 @@ export const auth = createAuthClient({
 })
 ```
 
+如果你的认证接口路径不是默认的 `/auth/*`，可以额外传 `authEndpointPaths`，用于 401 拦截器跳过重试：
+
+```ts
+export const auth = createAuthClient({
+  baseUrl: '/api/v1',
+  appId: 'your-app-id',
+  authEndpointPaths: ['/identity/sign-in', '/identity/token/refresh'],
+})
+```
+
 ## 3. 接入生成的 API 客户端
 
 在 hey-api 的 `runtimeConfigPath` 文件中传入访问令牌：
