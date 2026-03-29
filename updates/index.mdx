@@ -5,7 +5,18 @@ icon: "clock-rotate-left"
 rss: true
 ---
 
-<Update label="2026-03-29" description="@ag-vibe/auth v0.1.0 发布" tags={["auth"]}>
+<Update label="2026-03-29" description="@ag-vibe/auth 发布改进与文档上线" tags={["auth"]}>
+
+## @ag-vibe/auth
+
+- `baseUrl` 支持传入函数，适配运行时可变的 API 地址
+- 修正 `InterceptableClient` 中 `signal` 类型兼容性（`AbortSignal | null`）
+- 新增 GitHub Actions CI / CD workflow，CD 使用 npm Trusted Publishing（OIDC），无需长期 token
+- 开发者文档正式上线，涵盖快速开始、令牌刷新、会话 store、401 拦截器
+
+</Update>
+
+<Update label="2026-03-28" description="编辑体验与 API 规范稳定性更新" tags={["ido", "AllinOne", "auth"]}>
 
 ## @ag-vibe/auth
 
@@ -21,10 +32,6 @@ rss: true
 ```bash
 pnpm add @ag-vibe/auth
 ```
-
-</Update>
-
-<Update label="2026-03-28" description="编辑体验与 API 规范稳定性更新" tags={["ido", "AllinOne"]}>
 
 ## ido
 

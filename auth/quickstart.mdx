@@ -30,6 +30,15 @@ export const auth = createAuthClient({
 
 `appId` 用于命名空间化 `localStorage` 的 key（格式为 `ag-vibe.auth.<appId>.v1`）。同一 origin 下运行多个 ag-vibe 应用时，使用不同的 `appId` 可以防止令牌冲突。
 
+如果你的 API 地址在运行时可变（比如用户可以在设置里修改），`baseUrl` 支持传入函数：
+
+```ts
+export const auth = createAuthClient({
+  baseUrl: () => localStorage.getItem('apiUrl') ?? '/api/v1',
+  appId: 'your-app-id',
+})
+```
+
 ## 3. 接入生成的 API 客户端
 
 在 hey-api 的 `runtimeConfigPath` 文件中传入访问令牌：
