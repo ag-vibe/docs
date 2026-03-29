@@ -5,6 +5,25 @@ icon: "clock-rotate-left"
 rss: true
 ---
 
+<Update label="2026-03-29" description="@ag-vibe/auth v0.1.0 发布" tags={["auth"]}>
+
+## @ag-vibe/auth
+
+`@ag-vibe/auth` v0.1.0 首发，作为 ag-vibe 生态的前端认证 SDK 正式可用。
+
+- 基于 Zustand 的会话 store，支持 `localStorage` 持久化与跨标签页同步
+- 访问令牌过期前主动刷新，默认 60 秒提前量
+- 401 自动重试拦截器，兼容 `@hey-api/client-ofetch` 生成的客户端
+- 并发刷新去重，避免多个 401 触发多次 refresh 请求
+- 刷新失败容错：网络错误、429、5xx 不清除会话，仅 401/403 登出
+- 非 DOM 环境自动降级为内存存储（SSR、Worker）
+
+```bash
+pnpm add @ag-vibe/auth
+```
+
+</Update>
+
 <Update label="2026-03-28" description="编辑体验与 API 规范稳定性更新" tags={["ido", "AllinOne"]}>
 
 ## ido

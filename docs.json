@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "almond",
   "name": "ag-vibe",
   "colors": {
     "primary": "#16A34A",
@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "ido",
+        "tab": "ido (#Piece)",
         "groups": [
           {
             "group": "Overview",
@@ -37,7 +37,7 @@
         ]
       },
       {
-        "tab": "AllinOne",
+        "tab": "AllinOne (#Unit)",
         "groups": [
           {
             "group": "Overview",
@@ -64,6 +64,26 @@
         ]
       },
       {
+        "tab": "Auth (#Lib)",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "auth/index",
+              "auth/quickstart"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "auth/token-refresh",
+              "auth/session-store",
+              "auth/interceptor"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
@@ -73,10 +93,10 @@
         ]
       },
       {
-        "tab": "Updates",
+        "tab": "Changelog",
         "groups": [
           {
-            "group": "更新日志",
+            "group": "Changelog",
             "pages": [
               "updates/index"
             ]
@@ -106,7 +126,9 @@
       "href": "https://github.com/ag-vibe"
     }
   },
-  "openapi": ["https://github.com/ag-vibe/allinone/raw/refs/heads/main/api/v1.yaml"],
+  "openapi": [
+    "https://github.com/ag-vibe/allinone/raw/refs/heads/main/api/v1.yaml"
+  ],
   "api": {
     "mdx": {
       "server": "http://localhost:2910/api/v1"

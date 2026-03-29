@@ -1,0 +1,97 @@
+---
+title: "快速开始"
+description: "几步完成 ag-vibe 前端的身份认证接入。"
+---
+
+## 前置条件
+
+- 一个使用 [hey-api](https://heyapi.dev) 生成客户端（`@hey-api/client-ofetch`）的前端项目。
+- allinone 后端地址已通过环境变量提供。
+
+## 1. 安装
+
+```bash
+pnpm add @ag-vibe/auth
+```
+
+## 2. 创建 auth 客户端
+
+为你的应用创建一个共享单例。放在独立模块里可以避免循环依赖。
+
+```ts
+// src/lib/auth.ts
+import { createAuthClient } from '@ag-vibe/auth'
+
+export const auth = createAuthClient({
+  baseUrl: import.meta.env.VITE_API_BASE_URL ?? '/api/v1',
+  appId: 'your-app-id',
+})
+```
+
+`appId` 用于命名空间化 `localStorage` 的 key（格式为 `ag-vibe.auth.<appId>.v1`）。同一 origin 下运行多个 ag-vibe 应用时，使用不同的 `appId` 可以防止令牌冲突。
+
+## 3. 接入生成的 API 客户端
+
+在 hey-api 的 `runtimeConfigPath` 文件中传入访问令牌：
+
+```ts
+// src/lib/client.config.ts
+import { auth } from './auth'
+
+export const createClientConfig = (config: Record<string, unknown>) => ({
+  ...config,
+  auth: async (a: { scheme: string }) => {
+    if (a.scheme === 'bearer') {
+      return (await auth.ensureValidAccessToken()) ?? undefined
+    }
+    return undefined
+  },
+})
+```
+
+## 4. 安装 401 拦截器
+
+在应用启动时调用一次 `applyTo`，确保在客户端初始化完成之后执行：
+
+```ts
+// src/main.tsx
+import { auth } from '@/lib/auth'
+import { client as apiClient } from '@/api-gen/client.gen'
+
+auth.applyTo(apiClient)
+```
+
+如需同时覆盖多个客户端，传入数组即可：
+
+```ts
+auth.applyTo([apiClient, anclaxClient])
+```
+
+`applyTo` 是幂等的——对同一个客户端多次调用不会重复安装拦截器。
+
+## 5. 设置与清除会话
+
+登录成功后，将服务端返回的令牌存入 store：
+
+```ts
+import { auth } from '@/lib/auth'
+
+// POST /auth/sign-in 成功后
+auth.store.getState().setSession({
+  accessToken: response.accessToken,
+  refreshToken: response.refreshToken,
+  tokenType: response.tokenType,
+})
+```
+
+退出登录时清除：
+
+```ts
+auth.store.getState().clearSession()
+```
+
+完成。此后令牌刷新与请求重试均由拦截器自动处理。
+
+<Note>
+`setSession` 调用后会立即将会话持久化到 `localStorage`。页面刷新后，`isAuthenticated` 和 `session` 会在首次渲染前从存储中恢复。
+</Note>

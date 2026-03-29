@@ -1,0 +1,83 @@
+---
+title: "会话 store"
+description: "使用 Zustand store 读取和订阅认证状态。"
+---
+
+auth 客户端在 `auth.store` 上暴露了一个 [Zustand](https://zustand.docs.pmnd.rs) vanilla store。你可以直接读取状态、订阅变更、以及调用 action。
+
+## 读取状态
+
+```ts
+const { session, isAuthenticated } = auth.store.getState()
+```
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `session` | `AuthSession \| null` | 当前会话，未登录时为 `null`。 |
+| `isAuthenticated` | `boolean` | 由 `session` 派生的便捷标志。 |
+
+### AuthSession 字段
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `accessToken` | `string` | JWT 访问令牌。 |
+| `refreshToken` | `string \| undefined` | 不透明刷新令牌，服务端下发时存在。 |
+| `tokenType` | `string \| undefined` | 令牌类型，通常为 `"Bearer"`。 |
+
+## 订阅状态变更
+
+使用 `store.subscribe` 响应认证状态变化——例如在退出登录时跳转页面：
+
+```ts
+import { auth } from '@/lib/auth'
+
+auth.store.subscribe((state, prev) => {
+  if (prev.isAuthenticated && !state.isAuthenticated) {
+    // 用户已退出登录
+    window.location.href = '/sign-in'
+  }
+})
+```
+
+## 在 React 中使用
+
+vanilla store 不具备 React 响应性，需用 `zustand` 提供的 `useStore` 包装后在组件中使用：
+
+```ts
+import { useStore } from 'zustand'
+import { auth } from '@/lib/auth'
+
+function UserAvatar() {
+  const session = useStore(auth.store, (s) => s.session)
+  if (!session) return null
+  return <Avatar token={session.accessToken} />
+}
+```
+
+## 设置与清除会话
+
+```ts
+// 登录——在 POST /auth/sign-in 成功后调用
+auth.store.getState().setSession({
+  accessToken: '...',
+  refreshToken: '...',
+  tokenType: 'Bearer',
+})
+
+// 退出登录
+auth.store.getState().clearSession()
+```
+
+## 持久化
+
+store 将 `session` 持久化到 `localStorage`，key 为 `ag-vibe.auth.<appId>.v1`。只有会话数据会被持久化，派生标志和函数不包含在内。
+
+页面加载时，持久化的会话会在首次渲染前同步恢复。`isAuthenticated` 和 `session` 立即反映存储中的状态。
+
+<Note>
+当 `localStorage` 不可用时（严格浏览器上下文、SSR、Worker），store 会降级为内存实现。此时状态不会跨页面持久化。
+</Note>
+
+### 跨标签页同步
+
+浏览器的原生 `storage` 事件会将 `localStorage` 的变更传播到同 origin 下的所有标签页。Zustand 的 `persist` 中间件会自动监听该事件——在一个标签页退出登录后，同 origin 的其他标签页会同步清除会话。

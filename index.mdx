@@ -1,97 +1,22 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "ag-vibe"
+description: "一套面向个人的极客湾"
 ---
 
-## Setting up
+ag-vibe 从一个简单的想法开始：任务管理工具要么太重，要么太简陋；个人数据散落在 GitHub、天气服务、各种 API 里，没有一个地方能把它们收拢到一起。于是我们自己动手。
 
-Get your documentation site up and running in minutes.
+**ido** 是第一个落地的东西。四列看板，稍后 / 本周 / 今日 / 已完成，断网也能用。没有工作区、没有权限管理、没有协作功能——因为这些都不是我们需要的。
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+**AllinOne** 是撑起这一切的后端。一个 Go 服务跑所有东西：认证、任务数据、Widget 调度、Secret 加密。自托管，一个 Docker Compose 文件搞定。在此，感谢 [cloudcarver/anclax](https://github.com/cloudcarver/anclax) 为我们提供了一个非常棒的基础设施。
 
-## Make it yours
+**DkDk** 是我们正在做的第三件事。把 GitHub 统计、天气、任意 HTTP API 的数据以可拖拽的卡片形式聚合到同一个页面。DkDk 即 Dashboard Kanban 的缩写，灵感来自于看板和仪表盘的结合。我们希望它能成为一个个人信息中心，展示你关心的一切数据。
 
-Design a docs site that looks great and empowers your users.
+这些东西共用一套认证体系，通过 `@ag-vibe/auth` 这个包对外暴露。如果你想在自己的前端里接入 allinone 的认证，直接用就好。
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+ag-vibe 不是一个平台，不打算做给所有人用。它是一套刚好够用的工具，代码是公开的，文档在这里。
 
-## Create beautiful pages
+## Concept
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+- **Unit**: Unit 是 ag-vibe 的核心单位，代表着的是基础设施，如 AllinOne 就是一个 Unit。Unit 负责提供基础服务，如认证、数据存储、API 接口等。每个 Unit 都是独立的，可以单独部署和维护。
+- **Piece**：Piece 是 ag-vibe 的核心概念，代表一个独立的子项目。ido, DkDk 都是 Piece。每个 Piece 都是一个独立的前端应用，负责展示和交互。Piece 可以依赖 Unit 提供的服务，也可以独立运行。
+- **Lib**：Lib 是一些工具库，提供给 Piece 和 Unit 使用。比如 `@ag-vibe/auth` 就是一个 Lib，提供认证相关的功能。Lib 不包含业务逻辑，只提供基础功能和工具函数。

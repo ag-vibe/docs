@@ -1,0 +1,38 @@
+---
+title: "@ag-vibe/auth"
+description: "ag-vibe 前端的身份认证 SDK，负责管理令牌生命周期、持久化会话，并自动处理 401 恢复。"
+---
+
+`@ag-vibe/auth` 是 ag-vibe 前端的认证层，负责管理访问令牌、跨页面持久化会话，并自动完成 401 恢复——让你的业务代码无需关心令牌生命周期。
+
+## 功能特性
+
+- **会话持久化** — 将令牌存储在 `localStorage`，页面刷新后自动恢复，并通过原生 `storage` 事件实现跨标签页同步。
+- **主动刷新** — 在访问令牌过期前 60 秒自动刷新（可配置），避免请求因令牌过期而失败。
+- **401 自动重试** — 任意请求返回 401 时，拦截器会自动刷新令牌并重试一次，对调用方透明。
+- **并发去重** — 多个并发 401 只触发一次刷新请求。
+- **容错处理** — 刷新端点的网络错误、429、5xx 不会清除会话，用户不会被意外登出。
+- **非 DOM 降级** — 在 `localStorage` 不可用时（SSR、Worker 环境）自动降级为内存存储。
+
+## 安装
+
+```bash
+pnpm add @ag-vibe/auth
+```
+
+## 文档
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="bolt" href="/auth/quickstart">
+    5 分钟内完成接入。
+  </Card>
+  <Card title="令牌刷新" icon="arrows-rotate" href="/auth/token-refresh">
+    了解主动刷新与被动刷新的工作方式。
+  </Card>
+  <Card title="会话 store" icon="database" href="/auth/session-store">
+    读取与订阅认证状态。
+  </Card>
+  <Card title="401 拦截器" icon="shield" href="/auth/interceptor">
+    请求失败后的自动重试机制。
+  </Card>
+</CardGroup>

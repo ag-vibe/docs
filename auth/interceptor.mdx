@@ -1,0 +1,60 @@
+---
+title: "401 拦截器"
+description: "auth 客户端如何在刷新令牌后自动重试失败的请求。"
+---
+
+调用 `auth.applyTo(client)` 会在 hey-api 生成的客户端上安装一个响应拦截器。该拦截器通过刷新令牌并重试请求一次，来透明地处理 401 响应。
+
+## 工作流程
+
+<Steps>
+  <Step title="收到响应">
+    拦截器接收客户端的每一个响应。非 401 响应直接透传。
+  </Step>
+  <Step title="检查守卫条件">
+    以下情况跳过重试逻辑：
+    - 请求目标是认证端点（`/auth/sign-in`、`/auth/sign-up`、`/auth/sign-out`、`/auth/refresh`）。
+    - 请求已经重试过（携带内部标记头 `x-ag-vibe-auth-retried`）。
+  </Step>
+  <Step title="刷新令牌">
+    调用 `ensureValidAccessToken(true)`，强制刷新，不考虑过期状态。
+  </Step>
+  <Step title="重试请求">
+    使用更新后的 `Authorization` 头重放原始请求，并附加重试标记，防止二次重试。
+  </Step>
+  <Step title="返回结果">
+    将重试后的响应返回给调用方。若刷新失败，则返回原始 401 响应。
+  </Step>
+</Steps>
+
+## 安装
+
+```ts
+import { auth } from '@/lib/auth'
+import { client as apiClient } from '@/api-gen/client.gen'
+
+// 单个客户端
+auth.applyTo(apiClient)
+
+// 多个客户端
+auth.applyTo([apiClient, anclaxClient])
+```
+
+在应用启动时调用一次即可。对同一个客户端多次调用是安全的——拦截器只会安装一次。
+
+## 请求体处理
+
+重试时，拦截器从客户端捕获的序列化形式重建请求体。JSON 对象会被重新序列化，并在缺少 `Content-Type` 头时自动补充 `application/json`。
+
+## 跳过的端点
+
+以下路径的请求不会触发重试，以防止刷新循环：
+
+- `POST /auth/sign-in`
+- `POST /auth/sign-up`
+- `POST /auth/sign-out`
+- `POST /auth/refresh`
+
+<Warning>
+不要在客户端初始化完成前调用 `applyTo`，也不要在渲染周期内调用。推荐在应用启动入口（如 `main.tsx`）中执行。
+</Warning>
