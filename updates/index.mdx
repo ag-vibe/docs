@@ -5,14 +5,35 @@ icon: "clock-rotate-left"
 rss: true
 ---
 
-<Update label="2026-03-29" description="@ag-vibe/auth 发布改进与文档上线" tags={["auth"]}>
+<Update label="2026-03-29" description="AllinOne memo 服务、auth SDK、ido 交互与 memos v1 首发" tags={["AllinOne", "auth", "ido", "memos"]}>
+
+## AllinOne
+
+- 新增 memo 服务，支持 CRUD、标签和 backlink 关系
+- 补齐附件管理能力，新增附件与附件关联接口
+- 扩展 OpenAPI 与数据库迁移，带动后端 API 与生成代码同步更新
 
 ## @ag-vibe/auth
 
-- `baseUrl` 支持传入函数，适配运行时可变的 API 地址
-- 修正 `InterceptableClient` 中 `signal` 类型兼容性（`AbortSignal | null`）
+- `@ag-vibe/auth` 升级到 v0.1.3，`baseUrl` 支持传入函数，适配运行时可变的 API 地址
+- 修正 `InterceptableClient` 中 `signal` 类型兼容性，提升与不同运行时的适配稳定性
+- `createAuthClient` 支持自定义认证端点路径，方便接入不同后端约定
+- 新增 `waitForHydration`，帮助前端在会话恢复完成后再进入主流程
 - 新增 GitHub Actions CI / CD workflow，CD 使用 npm Trusted Publishing（OIDC），无需长期 token
 - 开发者文档正式上线，涵盖快速开始、令牌刷新、会话 store、401 拦截器
+
+## ido
+
+- 接入 `@ag-vibe/auth` v0.1.3，并配合 `waitForHydration` 优化会话初始化
+- 支持双击创建任务，并允许在任意列直接创建任务
+- 更新应用图标与品牌资源
+- 重整认证和主题相关逻辑，提升首屏与同步体验
+
+## memos
+
+- `memos` v1 正式上线，完成首页到内容页的整套产品首发
+- 新增认证页、应用壳、memo 列表、编辑器、活动图谱与内容卡片
+- 重新整理首页路由与样式，形成可直接使用的 memos 工作台
 
 </Update>
 
