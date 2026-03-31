@@ -5,6 +5,38 @@ icon: "clock-rotate-left"
 rss: true
 ---
 
+<Update label="2026-03-30" description="Haklex 编辑器接入、memo 数据结构重构，以及 todo / starter / docs 同步推进" tags={["AllinOne", "memos", "todo", "starter", "docs"]}>
+
+## AllinOne
+
+- memo 服务改为以结构化编辑器 JSON 持久化 `content`，并在响应中直接返回 `plainText`、`excerpt`、`tags`、`references`
+- 对齐 memo 相关 OpenAPI、SQL 查询、迁移与 handler / service / parser 测试，减少前后端各自派生字段的不一致
+- 补充 todo 描述与 bucket 管理测试，并更新开发技能与依赖配置
+
+## memos
+
+- 编辑器切换到 Haklex，前端开始直接编辑和渲染结构化内容，为后续自定义块和富内容扩展打基础
+- memo 编辑器增加可见 Toolbar，支持段落、标题、引用、粗斜体、下划线、行内代码、列表、分隔线，并把输入区拉高后再压紧 `article` 样式的 padding
+- 补齐登录 / SSR / hydration 处理、memos E2E 测试框架，以及标签过滤相关测试
+
+## todo
+
+- 持续修正 Cloudflare Pages / Nitro / PWA 发布链路，避免 HTML 被旧缓存卡住
+- 登录前置鉴权与 hydration 处理加强，SSR 下的认证判断更稳定
+- 清理 `TodoWithDescription` 和 `todo-descriptions` 旧结构，统一为 `TodoItem`
+
+## starter
+
+- `starter` 仓库初始化完成，补上 API base URL helper 测试并接入 Vitest 配置
+- CI 默认 `workdir` 设置简化
+
+## docs
+
+- 新增 memos 项目文档页面
+- 更新文档结构与更新日志页
+
+</Update>
+
 <Update label="2026-03-29" description="AllinOne memo 服务、auth SDK、ido 交互与 memos v1 首发" tags={["AllinOne", "auth", "ido", "memos"]}>
 
 ## AllinOne
