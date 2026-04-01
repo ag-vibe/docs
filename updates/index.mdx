@@ -5,6 +5,34 @@ icon: "clock-rotate-left"
 rss: true
 ---
 
+<Update label="2026-03-31" description="跨设备登录上线，CLI v0.1.0 首发" tags={["AllinOne", "memos", "todo", "cli"]}>
+
+## AllinOne
+
+- 新增设备授权登录能力，后端提供设备码申请、浏览器确认和令牌兑换接口，打通跨设备登录流程
+- 增加设备验证页面和对应持久化逻辑，补齐 `device_codes` 迁移、查询代码与服务测试
+- `TodoItem` 新增 `doneAt` 完成时间字段，OpenAPI、查询层和 handler 测试同步更新
+
+## memos
+
+- 登录页切换为设备授权流程，打开页面后即可生成 user code，并跳转到验证页完成登录
+- 授权完成后前端会自动轮询并写入会话，无需手动复制 access token
+- 同步更新生成的 API mutations、types 和校验 schema，对齐新的登录接口
+
+## todo
+
+- 登录流程改为设备授权模式，支持在另一台设备确认后自动回填令牌并进入应用
+- 看板开始展示任务的 `doneAt` 完成时间，为后续完成记录和排序提供基础
+- API 生成代码与登录路由同步调整，减少前后端认证流程分叉
+
+## @ag-vibe/cli
+
+- `@ag-vibe/cli` v0.1.0 首发，可在终端里直接查看和操作 memos、todos，并支持原始 API 请求
+- 首版内置 `auth`、`status`、`config`、`memo`、`todo`、`api`、`completion`、`version` 等命令
+- 补齐 CI / CD workflow，并修正默认 API base URL，降低首次使用时的配置成本
+
+</Update>
+
 <Update label="2026-03-30" description="Haklex 编辑器接入、memo 数据结构重构，以及 todo / starter / docs 同步推进" tags={["AllinOne", "memos", "todo", "starter", "docs"]}>
 
 ## AllinOne
